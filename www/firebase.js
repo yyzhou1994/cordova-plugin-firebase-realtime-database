@@ -91,3 +91,7 @@ exports.setDefaults = function (defaults, namespace, success, error) {
     }
     exec(success, error, "FirebaseDatabasePlugin", "setDefaults", args);
 };
+
+exports.setDatabasePersistent = function(persistent, success, error) {
+    exec(success, error, "FirebasePlugin", "setDatabasePersistent", [persistent]);
+};
