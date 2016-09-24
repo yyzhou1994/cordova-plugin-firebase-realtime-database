@@ -1,11 +1,11 @@
 var exec = require('cordova/exec');
 
 exports.getInstanceId = function(success, error) {
-    exec(success, error, "FirebasePlugin", "getInstanceId", []);
+    exec(success, error, "FirebaseDatabasePlugin", "getInstanceId", []);
 };
 
-exports.onNotificationOpen = function(success, error) {
-    exec(success, error, "FirebasePlugin", "onNotificationOpen", []);
+exports.updateChildren = function(success, error) {
+    exec(success, error, "FirebaseDatabasePlugin", "updateChildren", [updates]);
 };
 
 exports.onTokenRefreshNotification = function(success, error) {
@@ -13,39 +13,31 @@ exports.onTokenRefreshNotification = function(success, error) {
 };
 
 exports.grantPermission = function(success, error) {
-    exec(success, error, "FirebasePlugin", "grantPermission", []);
-};
-
-exports.setBadgeNumber = function(number, success, error) {
-    exec(success, error, "FirebasePlugin", "setBadgeNumber", [number]);
-};
-
-exports.getBadgeNumber = function(success, error) {
-    exec(success, error, "FirebasePlugin", "getBadgeNumber", []);
+    exec(success, error, "FirebaseDatabasePlugin", "grantPermission", []);
 };
 
 exports.subscribe = function(topic, success, error) {
-    exec(success, error, "FirebasePlugin", "subscribe", [topic]);
+    exec(success, error, "FirebaseDatabasePlugin", "subscribe", [topic]);
 };
 
 exports.unsubscribe = function(topic, success, error) {
-    exec(success, error, "FirebasePlugin", "unsubscribe", [topic]);
+    exec(success, error, "FirebaseDatabasePlugin", "unsubscribe", [topic]);
 };
 
 exports.logEvent = function(name, params, success, error) {
-    exec(success, error, "FirebasePlugin", "logEvent", [name, params]);
+    exec(success, error, "FirebaseDatabasePlugin", "logEvent", [name, params]);
 };
 
 exports.setUserId = function(id, success, error) {
-    exec(success, error, "FirebasePlugin", "setUserId", [id]);
+    exec(success, error, "FirebaseDatabasePlugin", "setUserId", [id]);
 };
 
 exports.setUserProperty = function(name, value, success, error) {
-    exec(success, error, "FirebasePlugin", "setUserProperty", [name, value]);
+    exec(success, error, "FirebaseDatabasePlugin", "setUserProperty", [name, value]);
 };
 
 exports.activateFetched = function (success, error) {
-    exec(success, error, "FirebasePlugin", "activateFetched", []);
+    exec(success, error, "FirebaseDatabasePlugin", "activateFetched", []);
 };
 
 exports.fetch = function (cacheExpirationSeconds, success, error) {
@@ -56,7 +48,7 @@ exports.fetch = function (cacheExpirationSeconds, success, error) {
         error = success;
         success = cacheExpirationSeconds;
     }
-    exec(success, error, "FirebasePlugin", "fetch", args);
+    exec(success, error, "FirebaseDatabasePlugin", "fetch", args);
 };
 
 exports.getByteArray = function (key, namespace, success, error) {
@@ -67,7 +59,7 @@ exports.getByteArray = function (key, namespace, success, error) {
         error = success;
         success = namespace;
     }
-    exec(success, error, "FirebasePlugin", "getByteArray", args);
+    exec(success, error, "FirebaseDatabasePlugin", "getByteArray", args);
 };
 
 exports.getValue = function (key, namespace, success, error) {
@@ -78,15 +70,15 @@ exports.getValue = function (key, namespace, success, error) {
         error = success;
         success = namespace;
     }
-    exec(success, error, "FirebasePlugin", "getValue", args);
+    exec(success, error, "FirebaseDatabasePlugin", "getValue", args);
 };
 
 exports.getInfo = function (success, error) {
-    exec(success, error, "FirebasePlugin", "getInfo", []);
+    exec(success, error, "FirebaseDatabasePlugin", "getInfo", []);
 };
 
 exports.setConfigSettings = function (settings, success, error) {
-    exec(success, error, "FirebasePlugin", "setConfigSettings", [settings]);
+    exec(success, error, "FirebaseDatabasePlugin", "setConfigSettings", [settings]);
 };
 
 exports.setDefaults = function (defaults, namespace, success, error) {
@@ -97,5 +89,5 @@ exports.setDefaults = function (defaults, namespace, success, error) {
         error = success;
         success = namespace;
     }
-    exec(success, error, "FirebasePlugin", "setDefaults", args);
+    exec(success, error, "FirebaseDatabasePlugin", "setDefaults", args);
 };

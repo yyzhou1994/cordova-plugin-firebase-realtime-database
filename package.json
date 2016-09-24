@@ -1,17 +1,17 @@
 {
   "author": {
-    "name": "Robert Arnesson"
+    "name": "H Martin"
   },
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/arnesson/cordova-plugin-firebase"
+    "url": "https://github.com/hbmartin/cordova-plugin-firebase-realtime-database"
   },
-  "name": "cordova-plugin-firebase",
-  "version": "0.1.12",
-  "description": "Cordova plugin for Google Firebase",
+  "name": "cordova-plugin-firebase-realtime-database",
+  "version": "0.1.0",
+  "description": "Cordova plugin for Google Firebase Realtime Database",
   "cordova": {
-    "id": "cordova-plugin-firebase",
+    "id": "cordova-plugin-firebase-realtime-database",
     "platforms": [
       "android",
       "ios",
@@ -24,7 +24,7 @@
     "cordova-ios",
     "cordova-browser",
     "firebase",
-    "push",
-    "notifications"
+    "realtime",
+    "database"
   ]
 }

@@ -1,18 +1,18 @@
-# cordova-plugin-firebase
-Cordova plugin for Google Firebase
+# cordova-plugin-firebase-realtime-database
+Cordova plugin for Google Firebase Realtime Database
 
 ## Installation
-See npm package for versions - https://www.npmjs.com/package/cordova-plugin-firebase
+See npm package for versions - https://www.npmjs.com/package/cordova-plugin-firebase-realtime-database
 
 Install the plugin by adding it your project's config.xml:
 ```
-<plugin name="cordova-plugin-firebase" spec="0.1.12" />
+<plugin name="cordova-plugin-firebase-realtime-database" spec="0.1.0" />
 ```
 or by running:
 ```
-cordova plugin add cordova-plugin-firebase@0.1.12 --save
+cordova plugin add cordova-plugin-firebase-realtime-database@0.1.0 --save
 ```
-Download your Firebase configuration files, GoogleService-Info.plist for ios and google-services.json for android, and place them in the root folder of your cordova project:
+Download your Firebase configuration files, GoogleService-Info.plist for iOS and google-services.json for Android, and place them in the root folder of your Cordova project:
 
 ```
 - My Project/
@@ -27,7 +27,7 @@ Download your Firebase configuration files, GoogleService-Info.plist for ios and
 
 See https://support.google.com/firebase/answer/7015592 for details how to download the files from firebase.
 
-This plugin uses a hook (after prepare) that copies the configuration files to the right place, namely platforms/ios/\<My Project\>/Resources for ios and platforms/android for android.
+This plugin uses a hook (after prepare) that copies the configuration files to the right place, namely platforms/ios/\<My Project\>/Resources for iOS and platforms/android for Android.
 
 **Note that the Firebase SDK requires the configuration files to be present and valid, otherwise your app will crash on boot or Firebase features won't work.**
 
@@ -64,60 +64,11 @@ window.FirebasePlugin.onNotificationOpen(function(notification) {
 Notification flow:
 
 1. App is in foreground:
-    1. User receives the notification data in the JavaScript callback without any notification on the device itself (this is the normal behaviour of push notifications, it is up to you, the developer, to notify the user)
+    1. User receives the notification data in the JavaScript callback without any notification on the device itself (this is the normal behavior of push notifications, it is up to you, the developer, to notify the user)
 2. App is in background:
     1. User receives the notification message in its device notification bar
     2. User taps the notification and the app opens
     3. User receives the notification data in the JavaScript callback
-
-### grantPermission (iOS only)
-
-Grant permission to recieve push notifications (will trigger prompt):
-```
-window.FirebasePlugin.grantPermission();
-```
-
-### setBadgeNumber
-
-Set a number on the icon badge:
-```
-window.FirebasePlugin.setBadgeNumber(3);
-```
-
-Set 0 to clear the badge
-```
-window.FirebasePlugin.setBadgeNumber(0);
-```
-
-### getBadgeNumber
-
-Get icon badge number:
-```
-window.FirebasePlugin.getBadgeNumber(function(n) {
-    console.log(n);
-});
-```
-
-### subscribe
-
-Subscribe to a topic:
-```
-window.FirebasePlugin.subscribe("example");
-```
-
-### unsubscribe
-
-Unsubscribe from a topic:
-```
-window.FirebasePlugin.unsubscribe("example");
-```
-
-### logEvent
-
-Log an event using Analytics:
-```
-window.FirebasePlugin.logEvent("page_view", {page: "dashboard"});
-```
 
 ### setUserId
 
@@ -131,28 +82,6 @@ window.FirebasePlugin.setUserId("user_id");
 Set a user property for use in Analytics:
 ```
 window.FirebasePlugin.setUserProperty("name", "value");
-```
-
-### fetch (Android only)
-
-Fetch Remote Config parameter values for your app:
-```
-window.FirebasePlugin.fetch();
-// or, specify the cacheExpirationSeconds
-window.FirebasePlugin.fetch(600);
-```
-
-### activateFetched (Android only)
-
-Activate the Remote Config fetched config:
-```
-window.FirebasePlugin.activateFetched(function(activated) {
-    // activated will be true if there was a fetched config activated,
-    // or false if no fetched config was found, or the fetched config was already activated.
-    console.log(activated);
-}, function(error) {
-    console.error(error);
-});
 ```
 
 ### getValue (Android only)
