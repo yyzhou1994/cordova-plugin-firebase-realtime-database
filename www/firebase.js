@@ -1,73 +1,34 @@
 var exec = require('cordova/exec');
 
-exports.getInstanceId = function(success, error) {
-    exec(success, error, "FirebasePlugin", "getInstanceId", []);
+exports.ref = function(path) {
+  var _path = path;
+  function FbDbRef() {  }
+
+  FbDbRef.setValue = function(updates) { return exports.setValue(_path, updates); };
+  FbDbRef.updateChildren = function(updates) { return exports.updateChildren(_path, updates); };
+  FbDbRef.child = function(child_path) { return exports.ref(_path + "/" + child_path); };
+
+  return FbDbRef;
+}
+
+exports.updateChildren = function(path, updates) {
+  return new Promise(function(success, error) {
+    exec(success, error, "FirebaseDatabasePlugin", "updateChildren", [path, updates]);
+  });
 };
 
-exports.onNotificationOpen = function(success, error) {
-    exec(success, error, "FirebasePlugin", "onNotificationOpen", []);
-};
-
-exports.onTokenRefreshNotification = function(success, error) {
-    exec(success, error, "FirebasePlugin", "onTokenRefreshNotification", []);
-};
-
-exports.grantPermission = function(success, error) {
-    exec(success, error, "FirebasePlugin", "grantPermission", []);
-};
-
-exports.setBadgeNumber = function(number, success, error) {
-    exec(success, error, "FirebasePlugin", "setBadgeNumber", [number]);
-};
-
-exports.getBadgeNumber = function(success, error) {
-    exec(success, error, "FirebasePlugin", "getBadgeNumber", []);
-};
-
-exports.subscribe = function(topic, success, error) {
-    exec(success, error, "FirebasePlugin", "subscribe", [topic]);
-};
-
-exports.unsubscribe = function(topic, success, error) {
-    exec(success, error, "FirebasePlugin", "unsubscribe", [topic]);
-};
-
-exports.logEvent = function(name, params, success, error) {
-    exec(success, error, "FirebasePlugin", "logEvent", [name, params]);
-};
-
-exports.setUserId = function(id, success, error) {
-    exec(success, error, "FirebasePlugin", "setUserId", [id]);
-};
-
-exports.setUserProperty = function(name, value, success, error) {
-    exec(success, error, "FirebasePlugin", "setUserProperty", [name, value]);
-};
-
-exports.activateFetched = function (success, error) {
-    exec(success, error, "FirebasePlugin", "activateFetched", []);
-};
-
-exports.fetch = function (cacheExpirationSeconds, success, error) {
-    var args = [];
-    if (typeof cacheExpirationSeconds === 'number') {
-        args.push(cacheExpirationSeconds);
+exports.setValue = function(path, updates) {
+  return new Promise(function(success, error) {
+    if (typeof updates == "boolean") {
+      exec(success, error, "FirebaseDatabasePlugin", "setValueBoolean", [path, updates]);
+    } else if (typeof updates == "number") {
+      exec(success, error, "FirebaseDatabasePlugin", "setValueNumber", [path, updates]);
+    } else if (typeof updates == "string") {
+      exec(success, error, "FirebaseDatabasePlugin", "setValueString", [path, updates]);
     } else {
-        error = success;
-        success = cacheExpirationSeconds;
+      exec(success, error, "FirebaseDatabasePlugin", "setValue", [path, updates]);
     }
-    exec(success, error, "FirebasePlugin", "fetch", args);
-};
-
-exports.getByteArray = function (key, namespace, success, error) {
-    var args = [key];
-    if (typeof namespace === 'string') {
-        args.push(namespace);
-    } else {
-        error = success;
-        success = namespace;
-    }
-    exec(success, error, "FirebasePlugin", "getByteArray", args);
+  });
 };
 
 exports.getValue = function (key, namespace, success, error) {
@@ -78,24 +39,21 @@ exports.getValue = function (key, namespace, success, error) {
         error = success;
         success = namespace;
     }
-    exec(success, error, "FirebasePlugin", "getValue", args);
+    exec(success, error, "FirebaseDatabasePlugin", "getValue", args);
 };
 
 exports.getInfo = function (success, error) {
-    exec(success, error, "FirebasePlugin", "getInfo", []);
+    exec(success, error, "FirebaseDatabasePlugin", "getInfo", []);
 };
 
 exports.setConfigSettings = function (settings, success, error) {
-    exec(success, error, "FirebasePlugin", "setConfigSettings", [settings]);
+    exec(success, error, "FirebaseDatabasePlugin", "setConfigSettings", [settings]);
 };
 
-exports.setDefaults = function (defaults, namespace, success, error) {
-    var args = [defaults];
-    if (typeof namespace === 'string') {
-        args.push(namespace);
-    } else {
-        error = success;
-        success = namespace;
-    }
-    exec(success, error, "FirebasePlugin", "setDefaults", args);
+exports.setDatabasePersistent = function(persistent, success, error) {
+    exec(success, error, "FirebaseDatabasePlugin", "setDatabasePersistent", [persistent]);
+};
+
+exports.setPersistenceEnabled = function(persistent, success, error) {
+    exec(success, error, "FirebaseDatabasePlugin", "setDatabasePersistent", [persistent]);
 };
