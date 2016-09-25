@@ -4,8 +4,20 @@ exports.getInstanceId = function(success, error) {
     exec(success, error, "FirebaseDatabasePlugin", "getInstanceId", []);
 };
 
-exports.updateChildren = function(success, error) {
+exports.updateChildren = function(updates, success, error) {
     exec(success, error, "FirebaseDatabasePlugin", "updateChildren", [updates]);
+};
+
+exports.setValue = function(path, updates, success, error) {
+    if (typeof updates == "boolean") {
+      exec(success, error, "FirebaseDatabasePlugin", "setValueBoolean", [path, updates]);
+    } else if (typeof updates == "number") {
+      exec(success, error, "FirebaseDatabasePlugin", "setValueNumber", [path, updates]);
+    } else if (typeof updates == "string") {
+      exec(success, error, "FirebaseDatabasePlugin", "setValueString", [path, updates]);
+    } else {
+      exec(success, error, "FirebaseDatabasePlugin", "setValue", [path, updates]);
+    }
 };
 
 exports.onTokenRefreshNotification = function(success, error) {
@@ -30,14 +42,6 @@ exports.logEvent = function(name, params, success, error) {
 
 exports.setUserId = function(id, success, error) {
     exec(success, error, "FirebaseDatabasePlugin", "setUserId", [id]);
-};
-
-exports.setUserProperty = function(name, value, success, error) {
-    exec(success, error, "FirebaseDatabasePlugin", "setUserProperty", [name, value]);
-};
-
-exports.activateFetched = function (success, error) {
-    exec(success, error, "FirebaseDatabasePlugin", "activateFetched", []);
 };
 
 exports.fetch = function (cacheExpirationSeconds, success, error) {

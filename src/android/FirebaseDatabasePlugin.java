@@ -18,6 +18,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
+import com.google.firebase.remoteconfig.FirebaseRemoteConfigSettings;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfigInfo;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfigSettings;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfigValue;
@@ -62,13 +63,21 @@ public class FirebaseDatabasePlugin extends CordovaPlugin {
         } else if (action.equals("updateChildren")) {
             this.updateChildren(callbackContext, args.getJSONObject(0));
             return true;
+        } else if (action.equals("setValueBoolean")) {
+            this.setValue(callbackContext, args.getString(0), args.getBoolean(1));
+            return true;
+        } else if (action.equals("setValueNumber")) {
+            this.setValue(callbackContext, args.getString(0), args.getDouble(1));
+            return true;
+        } else if (action.equals("setValueString")) {
+            this.setValue(callbackContext, args.getString(0), args.getString(1));
+            return true;
+        } else if (action.equals("setValue")) {
+            this.setValue(callbackContext, args.getString(0), args.getJSONObject(1));
+            return true;
         } else if (action.equals("getByteArray")) {
             if (args.length() > 1) this.getByteArray(callbackContext, args.getString(0), args.getString(1));
             else this.getByteArray(callbackContext, args.getString(0), null);
-            return true;
-        } else if (action.equals("getValue")) {
-            if (args.length() > 1) this.getValue(callbackContext, args.getString(0), args.getString(1));
-            else this.getValue(callbackContext, args.getString(0), null);
             return true;
         } else if (action.equals("getInfo")) {
             this.getInfo(callbackContext);
@@ -91,27 +100,6 @@ public class FirebaseDatabasePlugin extends CordovaPlugin {
                 }
             }
         });
-    }
-
-    private void activateFetched(final CallbackContext callbackContext) {
-        cordova.getThreadPool().execute(new Runnable() {
-            public void run() {
-                try {
-                    final boolean activated = FirebaseRemoteConfig.getInstance().activateFetched();
-                    callbackContext.success(String.valueOf(activated));
-                } catch (Exception e) {
-                    callbackContext.error(e.getMessage());
-                }
-            }
-        });
-    }
-
-    private void fetch(CallbackContext callbackContext) {
-        fetch(callbackContext, FirebaseRemoteConfig.getInstance().fetch());
-    }
-
-    private void fetch(CallbackContext callbackContext, long cacheExpirationSeconds) {
-        fetch(callbackContext, FirebaseRemoteConfig.getInstance().fetch(cacheExpirationSeconds));
     }
 
     private void fetch(final CallbackContext callbackContext, final Task<Void> task) {
@@ -146,20 +134,6 @@ public class FirebaseDatabasePlugin extends CordovaPlugin {
                     object.put("base64", Base64.encodeToString(bytes, Base64.DEFAULT));
                     object.put("array", new JSONArray(bytes));
                     callbackContext.success(object);
-                } catch (Exception e) {
-                    callbackContext.error(e.getMessage());
-                }
-            }
-        });
-    }
-
-    private void getValue(final CallbackContext callbackContext, final String key, final String namespace) {
-        cordova.getThreadPool().execute(new Runnable() {
-            public void run() {
-                try {
-                    FirebaseRemoteConfigValue value = namespace == null ? FirebaseRemoteConfig.getInstance().getValue(key)
-                            : FirebaseRemoteConfig.getInstance().getValue(key, namespace);
-                    callbackContext.success(value.asString());
                 } catch (Exception e) {
                     callbackContext.error(e.getMessage());
                 }
@@ -213,6 +187,47 @@ public class FirebaseDatabasePlugin extends CordovaPlugin {
               } catch (JSONException e) {
                   callbackContext.error(e.getMessage());
               }
+            }
+        });
+    }
+
+    private void setValue(final CallbackContext callbackContext, final String path, final JSONObject updates) {
+        cordova.getThreadPool().execute(new Runnable() {
+            public void run() {
+              try {
+                DatabaseReference myRef = mDatabase.child(path);
+
+                myRef.setValue(jsonObjectToMap(updates));
+              } catch (JSONException e) {
+                  callbackContext.error(e.getMessage());
+              }
+            }
+        });
+    }
+
+    private void setValue(final CallbackContext callbackContext, final String path, final String updates) {
+        cordova.getThreadPool().execute(new Runnable() {
+            public void run() {
+              DatabaseReference myRef = mDatabase.child(path);
+              myRef.setValue(updates);
+            }
+        });
+    }
+
+    private void setValue(final CallbackContext callbackContext, final String path, final double updates) {
+        cordova.getThreadPool().execute(new Runnable() {
+            public void run() {
+              DatabaseReference myRef = mDatabase.child(path);
+              myRef.setValue(updates);
+            }
+        });
+    }
+
+    private void setValue(final CallbackContext callbackContext, final String path, final boolean updates) {
+        cordova.getThreadPool().execute(new Runnable() {
+            public void run() {
+              DatabaseReference myRef = mDatabase.child(path);
+              myRef.setValue(updates);
             }
         });
     }
