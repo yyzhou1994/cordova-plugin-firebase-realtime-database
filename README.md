@@ -4,13 +4,9 @@ Cordova plugin for Google Firebase Realtime Database
 ## Installation
 See npm package for versions - https://www.npmjs.com/package/cordova-plugin-firebase-realtime-database
 
-Install the plugin by adding it your project's config.xml:
+Install the by running:
 ```
-<plugin name="cordova-plugin-firebase-realtime-database" spec="0.1.0" />
-```
-or by running:
-```
-cordova plugin add cordova-plugin-firebase-realtime-database@0.1.0 --save
+cordova plugin add cordova-plugin-firebase-realtime-database --save
 ```
 Download your Firebase configuration files, GoogleService-Info.plist for iOS and google-services.json for Android, and place them in the root folder of your Cordova project:
 
@@ -35,140 +31,50 @@ This plugin uses a hook (after prepare) that copies the configuration files to t
 
 Hooks does not work with PhoneGap Build. This means you will have to manually make sure the configuration files are included. One way to do that is to make a private fork of this plugin and replace the placeholder config files (see src/ios and src/android) with your actual ones.
 
+### Notes about Android Build
+
+You will have to manually add the following to platforms/android/build.gradle (around line 34:
+```
+buildscript {
+	...
+	dependencies { 
+		...
+		classpath 'com.google.gms:google-services:3.0.0'
+	}
+}
+````
 
 ## Methods
 
-### getInstanceId
+### ref
 
-Get the device id (token):
+Get a reference to a child path:
 ```
-window.FirebasePlugin.getInstanceId(function(token) {
-    // save this server-side and use it to push notifications to this device
-    console.log(token);
-}, function(error) {
-    console.error(error);
-});
+var firebaseThings = window.FirebaseDatabasePlugin.ref('things');
 ```
-Note that token will be null if it has not been established yet
+this is the preferred way to use FirebaseDatabasePlugin
 
-### onNotificationOpen
+### updateChildren
 
-Register notification callback:
+At a particular reference, update the given keys:
 ```
-window.FirebasePlugin.onNotificationOpen(function(notification) {
-    console.error(notification);
-}, function(error) {
-    console.error(error);
-});
-```
-Notification flow:
-
-1. App is in foreground:
-    1. User receives the notification data in the JavaScript callback without any notification on the device itself (this is the normal behavior of push notifications, it is up to you, the developer, to notify the user)
-2. App is in background:
-    1. User receives the notification message in its device notification bar
-    2. User taps the notification and the app opens
-    3. User receives the notification data in the JavaScript callback
-
-### setUserId
-
-Set a user id for use in Analytics:
-```
-window.FirebasePlugin.setUserId("user_id");
-```
-
-### setUserProperty
-
-Set a user property for use in Analytics:
-```
-window.FirebasePlugin.setUserProperty("name", "value");
-```
-
-### getValue (Android only)
-
-Retrieve a Remote Config value:
-```
-window.FirebasePlugin.getValue("key", function(value) {
-    console.log(value);
-}, function(error) {
-    console.error(error);
-});
-// or, specify a namespace for the config value
-window.FirebasePlugin.getValue("key", "namespace", function(value) {
-    console.log(value);
-}, function(error) {
-    console.error(error);
+firebaseThings.updateChildren({
+    'thing1' : 'aaa',
+    'thing2' : 'bbb'
 });
 ```
 
-### getByteArray (Android only)
-**NOTE: byte array is only available for SDK 19+**
-Retrieve a Remote Config byte array:
+### setValue
+
+At a particular reference, set the given value:
 ```
-window.FirebasePlugin.getByteArray("key", function(bytes) {
-    // a Base64 encoded string that represents the value for "key"
-    console.log(bytes.base64);
-    // a numeric array containing the values of the byte array (i.e. [0xFF, 0x00])
-    bytes.array;
-}, function(error) {
-    console.error(error);
-});
-// or, specify a namespace for the byte array
-window.FirebasePlugin.getByteArray("key", "namespace", function(bytes) {
-    // a Base64 encoded string that represents the value for "key"
-    console.log(bytes.base64);
-    // a numeric array containing the values of the byte array (i.e. [0xFF, 0x00])
-    bytes.array;
-}, function(error) {
-    console.error(error);
-});
+firebaseThings.child('thing1').setValue('ccc');
 ```
 
-### getInfo (Android only)
+### setDatabasePersistent
 
-Get the current state of the FirebaseRemoteConfig singleton object:
+Choose whether data should be persisted on disk, i.e. between app relaunches
 ```
-window.FirebasePlugin.getInfo(function(info) {
-    // the status of the developer mode setting (true/false)
-    console.log(info.configSettings.developerModeEnabled);
-    // the timestamp (milliseconds since epoch) of the last successful fetch
-    console.log(info.fetchTimeMillis);
-    // the status of the most recent fetch attempt (int)
-    console.log(info.lastFetchStatus);
-}, function(error) {
-    console.error(error);
-});
+window.FirebaseDatabasePlugin.setDatabasePersistent(true);
 ```
 
-### setConfigSettings (Android only)
-
-Change the settings for the FirebaseRemoteConfig object's operations:
-```
-var settings = {
-    developerModeEnabled: true
-}
-window.FirebasePlugin.setConfigSettings(settings);
-```
-
-### setDefaults (Android only)
-
-Set defaults in the Remote Config:
-```
-// define defaults
-var defaults = {
-    // map property name to value in Remote Config defaults
-    mLong: 1000,
-    mString: 'hello world',
-    mDouble: 3.14,
-    mBoolean: true,
-    // map "mBase64" to a Remote Config byte array represented by a Base64 string
-    // Note: the Base64 string is in an array in order to differentiate from a string config value
-    mBase64: ["SGVsbG8gV29ybGQ="],
-    // map "mBytes" to a Remote Config byte array represented by a numeric array
-    mBytes: [0xFF, 0x00]
-}
-// set defaults
-window.FirebasePlugin.setDefaults(defaults);
-// or, specify a namespace
-window.FirebasePlugin.setDefaults(defaults, "namespace");
-```
