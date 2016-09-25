@@ -1,14 +1,28 @@
 var exec = require('cordova/exec');
 
+exports.ref = function(path) {
+  var _path = path;
+  function FbDbRef() {  }
+
+  FbDbRef.setValue = function(updates) { return exports.setValue(_path, updates); };
+  FbDbRef.updateChildren = function(updates) { return exports.updateChildren(_path, updates); };
+  FbDbRef.child = function(child_path) { return exports.ref(_path + "/" + child_path); };
+
+  return $;
+}
+
 exports.getInstanceId = function(success, error) {
     exec(success, error, "FirebaseDatabasePlugin", "getInstanceId", []);
 };
 
-exports.updateChildren = function(updates, success, error) {
-    exec(success, error, "FirebaseDatabasePlugin", "updateChildren", [updates]);
+exports.updateChildren = function(path, updates) {
+  return new Promise(function(success, error) {
+    exec(success, error, "FirebaseDatabasePlugin", "updateChildren", [path, updates]);
+  });
 };
 
-exports.setValue = function(path, updates, success, error) {
+exports.setValue = function(path, updates) {
+  return new Promise(function(success, error) {
     if (typeof updates == "boolean") {
       exec(success, error, "FirebaseDatabasePlugin", "setValueBoolean", [path, updates]);
     } else if (typeof updates == "number") {
@@ -18,6 +32,7 @@ exports.setValue = function(path, updates, success, error) {
     } else {
       exec(success, error, "FirebaseDatabasePlugin", "setValue", [path, updates]);
     }
+  });
 };
 
 exports.onTokenRefreshNotification = function(success, error) {

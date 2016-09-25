@@ -8,7 +8,7 @@ import android.os.Bundle;
 import android.content.Context;
 import android.content.SharedPreferences;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.gson.Gson;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
@@ -57,11 +57,8 @@ public class FirebaseDatabasePlugin extends CordovaPlugin {
 
     @Override
     public boolean execute(String action, JSONArray args, CallbackContext callbackContext) throws JSONException {
-        if (action.equals("getInstanceId")) {
-            this.getInstanceId(callbackContext);
-            return true;
-        } else if (action.equals("updateChildren")) {
-            this.updateChildren(callbackContext, args.getJSONObject(0));
+        if (action.equals("updateChildren")) {
+            this.updateChildren(callbackContext, args.getString(0), args.getJSONObject(1));
             return true;
         } else if (action.equals("setValueBoolean")) {
             this.setValue(callbackContext, args.getString(0), args.getBoolean(1));
@@ -87,19 +84,6 @@ public class FirebaseDatabasePlugin extends CordovaPlugin {
             return true;
         }
         return false;
-    }
-
-    private void getInstanceId(final CallbackContext callbackContext) {
-        cordova.getThreadPool().execute(new Runnable() {
-            public void run() {
-                try {
-                    String token = FirebaseInstanceId.getInstance().getToken();
-                    callbackContext.success(token);
-                } catch (Exception e) {
-                    callbackContext.error(e.getMessage());
-                }
-            }
-        });
     }
 
     private void fetch(final CallbackContext callbackContext, final Task<Void> task) {
@@ -179,11 +163,15 @@ public class FirebaseDatabasePlugin extends CordovaPlugin {
         });
     }
 
-    private void updateChildren(final CallbackContext callbackContext, final JSONObject updates) {
+    private void updateChildren(final CallbackContext callbackContext, final String path, final JSONObject updates) {
         cordova.getThreadPool().execute(new Runnable() {
             public void run() {
               try {
-                mDatabase.updateChildren(jsonObjectToMap(updates));
+                if (path != null) {
+                  mDatabase.child(path).updateChildren(jsonObjectToMap(updates));
+                } else {
+                  mDatabase.updateChildren(jsonObjectToMap(updates));
+                }
               } catch (JSONException e) {
                   callbackContext.error(e.getMessage());
               }
@@ -232,17 +220,10 @@ public class FirebaseDatabasePlugin extends CordovaPlugin {
         });
     }
 
-    private static Map<String, Object> jsonObjectToMap(JSONObject object) throws JSONException {
-        final Map<String, Object> map = new HashMap<String, Object>();
-
-        for (Iterator<String> keys = object.keys(); keys.hasNext(); ) {
-            String key = keys.next();
-            Object value = object.get(key);
-            Map<String, Object> valueMap = new ObjectMapper().convertValue(value, Map.class);
-
-
-            map.put(key, (Object) valueMap);
-        }
-        return map;
+    private static Map<String, Object> jsonObjectToMap(JSONObject json) throws JSONException {
+      Gson gson = new Gson();
+      Map<String,Object> map = new HashMap<String,Object>();
+      map = (Map<String,Object>) gson.fromJson(json.toString(), map.getClass());
+      return map;
     }
 }
