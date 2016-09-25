@@ -72,95 +72,11 @@ public class FirebaseDatabasePlugin extends CordovaPlugin {
         } else if (action.equals("setValue")) {
             this.setValue(callbackContext, args.getString(0), args.getJSONObject(1));
             return true;
-        } else if (action.equals("getByteArray")) {
-            if (args.length() > 1) this.getByteArray(callbackContext, args.getString(0), args.getString(1));
-            else this.getByteArray(callbackContext, args.getString(0), null);
-            return true;
-        } else if (action.equals("getInfo")) {
-            this.getInfo(callbackContext);
-            return true;
-        } else if (action.equals("setConfigSettings")) {
-            this.setConfigSettings(callbackContext, args.getJSONObject(0));
+        } else if (action.equals("setDatabasePersistent")) {
+            this.setPersistenceEnabled(callbackContext, args.getBoolean(0));
             return true;
         }
         return false;
-    }
-
-    private void fetch(final CallbackContext callbackContext, final Task<Void> task) {
-        cordova.getThreadPool().execute(new Runnable() {
-            public void run() {
-                try {
-                    task.addOnCompleteListener(new OnCompleteListener<Void>() {
-                        @Override
-                        public void onComplete(Task<Void> task) {
-                            callbackContext.success();
-                        }
-                    }).addOnFailureListener(new OnFailureListener() {
-                        @Override
-                        public void onFailure(Exception e) {
-                            callbackContext.error(e.getMessage());
-                        }
-                    });
-                } catch (Exception e) {
-                    callbackContext.error(e.getMessage());
-                }
-            }
-        });
-    }
-
-    private void getByteArray(final CallbackContext callbackContext, final String key, final String namespace) {
-        cordova.getThreadPool().execute(new Runnable() {
-            public void run() {
-                try {
-                    byte[] bytes = namespace == null ? FirebaseRemoteConfig.getInstance().getByteArray(key)
-                            : FirebaseRemoteConfig.getInstance().getByteArray(key, namespace);
-                    JSONObject object = new JSONObject();
-                    object.put("base64", Base64.encodeToString(bytes, Base64.DEFAULT));
-                    object.put("array", new JSONArray(bytes));
-                    callbackContext.success(object);
-                } catch (Exception e) {
-                    callbackContext.error(e.getMessage());
-                }
-            }
-        });
-    }
-
-    private void getInfo(final CallbackContext callbackContext) {
-        cordova.getThreadPool().execute(new Runnable() {
-            public void run() {
-                try {
-                    FirebaseRemoteConfigInfo remoteConfigInfo = FirebaseRemoteConfig.getInstance().getInfo();
-                    JSONObject info = new JSONObject();
-
-                    JSONObject settings = new JSONObject();
-                    settings.put("developerModeEnabled", remoteConfigInfo.getConfigSettings().isDeveloperModeEnabled());
-                    info.put("configSettings", settings);
-
-                    info.put("fetchTimeMillis", remoteConfigInfo.getFetchTimeMillis());
-                    info.put("lastFetchStatus", remoteConfigInfo.getLastFetchStatus());
-
-                    callbackContext.success(info);
-                } catch (Exception e) {
-                    callbackContext.error(e.getMessage());
-                }
-            }
-        });
-    }
-
-    private void setConfigSettings(final CallbackContext callbackContext, final JSONObject config) {
-        cordova.getThreadPool().execute(new Runnable() {
-            public void run() {
-                try {
-                    boolean devMode = config.getBoolean("developerModeEnabled");
-                    FirebaseRemoteConfigSettings.Builder settings = new FirebaseRemoteConfigSettings.Builder()
-                            .setDeveloperModeEnabled(devMode);
-                    FirebaseRemoteConfig.getInstance().setConfigSettings(settings.build());
-                    callbackContext.success();
-                } catch (Exception e) {
-                    callbackContext.error(e.getMessage());
-                }
-            }
-        });
     }
 
     private void updateChildren(final CallbackContext callbackContext, final String path, final JSONObject updates) {
@@ -170,7 +86,7 @@ public class FirebaseDatabasePlugin extends CordovaPlugin {
                 if (path != null) {
                   mDatabase.child(path).updateChildren(jsonObjectToMap(updates));
                 } else {
-                  mDatabase.updateChildren(jsonObjectToMap(updates));
+                  mDatabase.updateChildren(jsonObjectToMap(updates), getCompletionListener(callbackContext));
                 }
               } catch (JSONException e) {
                   callbackContext.error(e.getMessage());
@@ -183,9 +99,7 @@ public class FirebaseDatabasePlugin extends CordovaPlugin {
         cordova.getThreadPool().execute(new Runnable() {
             public void run() {
               try {
-                DatabaseReference myRef = mDatabase.child(path);
-
-                myRef.setValue(jsonObjectToMap(updates));
+                mDatabase.child(path).setValue(jsonObjectToMap(updates), getCompletionListener(callbackContext));
               } catch (JSONException e) {
                   callbackContext.error(e.getMessage());
               }
@@ -196,8 +110,7 @@ public class FirebaseDatabasePlugin extends CordovaPlugin {
     private void setValue(final CallbackContext callbackContext, final String path, final String updates) {
         cordova.getThreadPool().execute(new Runnable() {
             public void run() {
-              DatabaseReference myRef = mDatabase.child(path);
-              myRef.setValue(updates);
+                mDatabase.child(path).setValue(updates, getCompletionListener(callbackContext));
             }
         });
     }
@@ -205,8 +118,7 @@ public class FirebaseDatabasePlugin extends CordovaPlugin {
     private void setValue(final CallbackContext callbackContext, final String path, final double updates) {
         cordova.getThreadPool().execute(new Runnable() {
             public void run() {
-              DatabaseReference myRef = mDatabase.child(path);
-              myRef.setValue(updates);
+                mDatabase.child(path).setValue(updates, getCompletionListener(callbackContext));
             }
         });
     }
@@ -214,10 +126,30 @@ public class FirebaseDatabasePlugin extends CordovaPlugin {
     private void setValue(final CallbackContext callbackContext, final String path, final boolean updates) {
         cordova.getThreadPool().execute(new Runnable() {
             public void run() {
-              DatabaseReference myRef = mDatabase.child(path);
-              myRef.setValue(updates);
+              mDatabase.child(path).setValue(updates, getCompletionListener(callbackContext));
             }
         });
+    }
+
+    private void setPersistenceEnabled(final CallbackContext callbackContext, final boolean persistent) {
+        cordova.getThreadPool().execute(new Runnable() {
+            public void run() {
+                FirebaseDatabase.getInstance().setPersistenceEnabled(persistent);
+            }
+        });
+    }
+
+    private DatabaseReference.CompletionListener getCompletionListener(final CallbackContext callbackContext) {
+        return new DatabaseReference.CompletionListener() {
+            @Override
+            public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
+                if (databaseError == null) {
+                    callbackContext.success("");
+                } else {
+                    callbackContext.error(databaseError.getMessage());
+                }
+            }
+        };
     }
 
     private static Map<String, Object> jsonObjectToMap(JSONObject json) throws JSONException {
