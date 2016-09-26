@@ -21,16 +21,8 @@
 				<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 				<uses-permission android:name="android.permission.WAKE_LOCK" />
 		</config-file>
-		<config-file target="AndroidManifest.xml" parent="/manifest/application">
-			<service android:name="org.apache.cordova.firebase.FirebasePluginInstanceIDService">
-				<intent-filter>
-					<action android:name="com.google.firebase.INSTANCE_ID_EVENT"/>
-				</intent-filter>
-			</service>
-		</config-file>
 		<source-file src="src/android/google-services.json" target-dir="." />
 		<source-file src="src/android/FirebaseDatabasePlugin.java" target-dir="src/org/apache/cordova/firebase" />
-		<source-file src="src/android/FirebasePluginInstanceIDService.java" target-dir="src/org/apache/cordova/firebase" />
 
 		<framework src="src/android/build.gradle" custom="true" type="gradleReference" />
 		<framework src="src/android/build-extras.gradle" custom="true" type="gradleReference" />

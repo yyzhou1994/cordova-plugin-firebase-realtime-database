@@ -12,6 +12,7 @@ import com.google.gson.Gson;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -42,6 +43,7 @@ public class FirebaseDatabasePlugin extends CordovaPlugin {
     private final String TAG = "FirebaseDatabasePlugin";
 
     private DatabaseReference mDatabase;
+    private FirebaseAuth mAuth;
     private static WeakReference<CallbackContext> callbackContext;
 
     @Override
@@ -51,6 +53,7 @@ public class FirebaseDatabasePlugin extends CordovaPlugin {
             public void run() {
                 Log.d(TAG, "Starting Firebase plugin");
                 mDatabase = FirebaseDatabase.getInstance().getReference();
+                mAuth = FirebaseAuth.getInstance();
             }
         });
     }
@@ -74,6 +77,9 @@ public class FirebaseDatabasePlugin extends CordovaPlugin {
             return true;
         } else if (action.equals("setDatabasePersistent")) {
             this.setPersistenceEnabled(callbackContext, args.getBoolean(0));
+            return true;
+        } else if (action.equals("signInWithEmailAndPassword")) {
+            this.signInWithEmailAndPassword(callbackContext, args.getString(0), args.getString(1));
             return true;
         }
         return false;
@@ -135,6 +141,25 @@ public class FirebaseDatabasePlugin extends CordovaPlugin {
         cordova.getThreadPool().execute(new Runnable() {
             public void run() {
                 FirebaseDatabase.getInstance().setPersistenceEnabled(persistent);
+            }
+        });
+    }
+
+    private void signInWithEmailAndPassword(final CallbackContext callbackContext, final String email, final String password) {
+        cordova.getThreadPool().execute(new Runnable() {
+            public void run() {
+                mAuth.signInWithEmailAndPassword(email, password).addOnCompleteListener(
+                    new OnCompleteListener<AuthResult>() {
+                        @Override
+                        public void onComplete(@NonNull Task<AuthResult> task) {
+                            if(!task.isSuccessful()) {
+                                callbackContext.error(task.getException().toString());
+                            } else {
+                                callbackContext.success("");
+                            }
+                        }
+                    }
+                );
             }
         });
     }

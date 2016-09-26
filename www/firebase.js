@@ -57,3 +57,8 @@ exports.setDatabasePersistent = function(persistent, success, error) {
 exports.setPersistenceEnabled = function(persistent, success, error) {
     exec(success, error, "FirebaseDatabasePlugin", "setDatabasePersistent", [persistent]);
 };
+exports.signInWithEmailAndPassword = function(email, password) {
+    return new Promise(function(success, error) {
+        exec(success, error, "FirebaseDatabasePlugin", "signInWithEmailAndPassword", [email, password]);
+    });
+};
