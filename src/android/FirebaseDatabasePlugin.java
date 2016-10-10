@@ -13,6 +13,7 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.AuthResult;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -29,8 +30,6 @@ import org.apache.cordova.CallbackContext;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-
-import com.google.firebase.iid.FirebaseInstanceId;
 
 import java.lang.ref.WeakReference;
 import java.util.HashMap;
@@ -90,7 +89,7 @@ public class FirebaseDatabasePlugin extends CordovaPlugin {
             public void run() {
               try {
                 if (path != null) {
-                  mDatabase.child(path).updateChildren(jsonObjectToMap(updates));
+                  mDatabase.child(path).updateChildren(jsonObjectToMap(updates), getCompletionListener(callbackContext));
                 } else {
                   mDatabase.updateChildren(jsonObjectToMap(updates), getCompletionListener(callbackContext));
                 }
@@ -151,8 +150,8 @@ public class FirebaseDatabasePlugin extends CordovaPlugin {
                 mAuth.signInWithEmailAndPassword(email, password).addOnCompleteListener(
                     new OnCompleteListener<AuthResult>() {
                         @Override
-                        public void onComplete(@NonNull Task<AuthResult> task) {
-                            if(!task.isSuccessful()) {
+                        public void onComplete(Task<AuthResult> task) {
+                            if (task == null || !task.isSuccessful()) {
                                 callbackContext.error(task.getException().toString());
                             } else {
                                 callbackContext.success("");
