@@ -1,5 +1,6 @@
 # cordova-plugin-firebase-realtime-database
 Cordova plugin for Google Firebase Realtime Database
+Based on the the Firebase Notification / FCM plugin https://github.com/arnesson/cordova-plugin-firebase
 
 ## Installation
 See npm package for versions - https://www.npmjs.com/package/cordova-plugin-firebase-realtime-database
@@ -63,6 +64,7 @@ firebaseThings.updateChildren({
     'thing2' : 'bbb'
 });
 ```
+returns Promise
 
 ### setValue
 
@@ -70,6 +72,7 @@ At a particular reference, set the given value:
 ```
 firebaseThings.child('thing1').setValue('ccc');
 ```
+returns Promise
 
 ### setDatabasePersistent
 
@@ -78,3 +81,10 @@ Choose whether data should be persisted on disk, i.e. between app relaunches
 window.FirebaseDatabasePlugin.setDatabasePersistent(true);
 ```
 
+### signInWithEmailAndPassword
+
+Choose whether data should be persisted on disk, i.e. between app relaunches
+```
+window.FirebaseDatabasePlugin.signInWithEmailAndPassword(email, password);
+```
+returns Promise
