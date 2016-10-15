@@ -5,7 +5,7 @@ Based on the the [Firebase Notification / FCM plugin](https://github.com/arnesso
 
 ## Support
 Please file bugs in [Issues](https://github.com/hbmartin/cordova-plugin-firebase-realtime-database/issues)
-Ask for help in #cordova on the [FirebaseJS Slack](https://firebasejs.slack.com/)
+Ask for help in #cordova on the [Firebase Community Slack](https://firebase-community.appspot.com)
 
 ## Installation
 See npm package for versions - https://www.npmjs.com/package/cordova-plugin-firebase-realtime-database
