@@ -33,37 +33,37 @@ function directoryExists(path) {
 var config = fs.readFileSync("config.xml").toString()
 var name = getValue(config, "name")
 
-if (directoryExists("platforms/ios")) {
-  var paths = ["GoogleService-Info.plist", "platforms/ios/www/GoogleService-Info.plist"];
+// if (directoryExists("platforms/ios")) {
+//   var paths = ["GoogleService-Info.plist", "platforms/ios/www/GoogleService-Info.plist"];
 
-  for (var i = 0; i < paths.length; i++) {
-    if (fileExists(paths[i])) {
-      try {
-        var contents = fs.readFileSync(paths[i]).toString();
-        fs.writeFileSync("platforms/ios/" + name + "/Resources/GoogleService-Info.plist", contents)
-      } catch(err) {
-        process.stdout.write(err);
-      }
+//   for (var i = 0; i < paths.length; i++) {
+//     if (fileExists(paths[i])) {
+//       try {
+//         var contents = fs.readFileSync(paths[i]).toString();
+//         fs.writeFileSync("platforms/ios/" + name + "/Resources/GoogleService-Info.plist", contents)
+//       } catch(err) {
+//         process.stdout.write(err);
+//       }
 
-      break;
-    }
-  }
-}
+//       break;
+//     }
+//   }
+// }
 
-if (directoryExists("platforms/android")) {
-  var paths = ["google-services.json", "platforms/android/assets/www/google-services.json"];
+// if (directoryExists("platforms/android")) {
+//   var paths = ["google-services.json", "platforms/android/assets/www/google-services.json"];
 
-  for (var i = 0; i < paths.length; i++) {
-    if (fileExists(paths[i])) {
-      try {
-        var contents = fs.readFileSync(paths[i]).toString();
-        fs.writeFileSync("platforms/android/google-services.json", contents);
+//   for (var i = 0; i < paths.length; i++) {
+//     if (fileExists(paths[i])) {
+//       try {
+//         var contents = fs.readFileSync(paths[i]).toString();
+//         fs.writeFileSync("platforms/android/google-services.json", contents);
 
-      } catch(err) {
-        process.stdout.write(err);
-      }
+//       } catch(err) {
+//         process.stdout.write(err);
+//       }
 
-      break;
-    }
-  }
-}
+//       break;
+//     }
+//   }
+// }
