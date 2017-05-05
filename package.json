@@ -5,7 +5,7 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/hbmartin/cordova-plugin-firebase-realtime-database"
+    "url": "https://github.com/yyzhou1994/cordova-plugin-firebase-realtime-database"
   },
   "name": "cordova-plugin-firebase-realtime-database",
   "version": "0.0.2",
