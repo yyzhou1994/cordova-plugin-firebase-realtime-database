@@ -72,5 +72,5 @@
 		</js-module>
 	</platform>
 
-	<hook src="scripts/after_prepare.js" type="after_prepare" />
+<!-- 	<hook src="scripts/after_prepare.js" type="after_prepare" /> -->
 </plugin>
