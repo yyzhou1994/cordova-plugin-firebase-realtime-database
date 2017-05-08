@@ -1,37 +1,37 @@
-#!/usr/bin/env node
-'use strict';
+// #!/usr/bin/env node
+// 'use strict';
 
-var fs = require('fs');
+// var fs = require('fs');
 
-var getValue = function(config, name) {
-    var value = config.match(new RegExp('<' + name + '>(.*?)</' + name + '>', "i"))
-    if(value && value[1]) {
-        return value[1]
-    } else {
-        return null
-    }
-}
+// var getValue = function(config, name) {
+//     var value = config.match(new RegExp('<' + name + '>(.*?)</' + name + '>', "i"))
+//     if(value && value[1]) {
+//         return value[1]
+//     } else {
+//         return null
+//     }
+// }
 
-function fileExists(path) {
-  try  {
-    return fs.statSync(path).isFile();
-  }
-  catch (e) {
-    return false;
-  }
-}
+// function fileExists(path) {
+//   try  {
+//     return fs.statSync(path).isFile();
+//   }
+//   catch (e) {
+//     return false;
+//   }
+// }
 
-function directoryExists(path) {
-  try  {
-    return fs.statSync(path).isDirectory();
-  }
-  catch (e) {
-    return false;
-  }
-}
+// function directoryExists(path) {
+//   try  {
+//     return fs.statSync(path).isDirectory();
+//   }
+//   catch (e) {
+//     return false;
+//   }
+// }
 
-var config = fs.readFileSync("config.xml").toString()
-var name = getValue(config, "name")
+// var config = fs.readFileSync("config.xml").toString()
+// var name = getValue(config, "name")
 
 // if (directoryExists("platforms/ios")) {
 //   var paths = ["GoogleService-Info.plist", "platforms/ios/www/GoogleService-Info.plist"];
