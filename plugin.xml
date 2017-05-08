@@ -21,7 +21,7 @@
 				<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 				<uses-permission android:name="android.permission.WAKE_LOCK" />
 		</config-file>
-<!-- 		<source-file src="src/android/google-services.json" target-dir="." /> -->
+		<source-file src="src/android/google-services.json" target-dir="." />
 		<source-file src="src/android/FirebaseDatabasePlugin.java" target-dir="src/org/apache/cordova/firebase" />
 
 		<framework src="src/android/build.gradle" custom="true" type="gradleReference" />
@@ -47,7 +47,7 @@
 			</feature>
 		</config-file>
 
-<!-- 		<resource-file src="src/ios/GoogleService-Info.plist" target="Resources/GoogleService-Info.plist" /> -->
+		<resource-file src="src/ios/GoogleService-Info.plist" target="Resources/GoogleService-Info.plist" />
 
 		<header-file src="src/ios/AppDelegate+FirebasePlugin.h" />
 		<source-file src="src/ios/AppDelegate+FirebasePlugin.m" />
@@ -74,5 +74,5 @@
 		</js-module>
 	</platform>
 
-<!-- 	<hook src="scripts/after_prepare.js" type="after_prepare" /> -->
+	<hook src="scripts/after_prepare.js" type="after_prepare" />
 </plugin>
