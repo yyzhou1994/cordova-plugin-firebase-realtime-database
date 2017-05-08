@@ -40,9 +40,7 @@ if (directoryExists("platforms/ios")) {
     if (fileExists(paths[i])) {
       try {
         var contents = fs.readFileSync(paths[i]).toString();
-        if(!fileExists("platforms/ios/" + name + "/Resources/GoogleService-Info.plist")){
-          fs.writeFileSync("platforms/ios/" + name + "/Resources/GoogleService-Info.plist", contents);
-        }
+        fs.writeFileSync("platforms/ios/" + name + "/Resources/GoogleService-Info.plist", contents);
       } catch(err) {
         process.stdout.write(err);
       }
@@ -59,9 +57,7 @@ if (directoryExists("platforms/android")) {
     if (fileExists(paths[i])) {
       try {
         var contents = fs.readFileSync(paths[i]).toString();
-        if(!fileExists("platforms/android/google-services.json")){
-          fs.writeFileSync("platforms/android/google-services.json", contents);
-        }
+        fs.writeFileSync("platforms/android/google-services.json", contents);
       } catch(err) {
         process.stdout.write(err);
       }
